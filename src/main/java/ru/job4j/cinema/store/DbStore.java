@@ -25,14 +25,14 @@ public class DbStore {
                 DbStore.class.getClassLoader().getResourceAsStream(fileProperties)))) {
             cfg.load(io);
         } catch (Exception e) {
-            LOGGER.error("Не удалось выполнить операцию");
+           LOGGER.error("Не удалось выполнить операцию", e);
             throw new IllegalStateException(e);
         }
 
         try {
             Class.forName(cfg.getProperty("jdbc.driver"));
         } catch (Exception e) {
-            LOGGER.error("Не удалось выполнить операцию");
+           LOGGER.error("Не удалось выполнить операцию", e);
             throw new IllegalStateException(e);
         }
 
@@ -67,7 +67,7 @@ public class DbStore {
                     }
                 }
             } catch (Exception e) {
-                LOGGER.error("Не удалось выполнить операцию");
+               LOGGER.error("Не удалось выполнить операцию", e);
                 e.printStackTrace();
             }
             return -1;
@@ -85,7 +85,7 @@ public class DbStore {
                 }
             }
         } catch (Exception e) {
-            LOGGER.error("Не удалось выполнить операцию");
+           LOGGER.error("Не удалось выполнить операцию", e);
             e.printStackTrace();
         }
         return null;
@@ -103,7 +103,7 @@ public class DbStore {
                 }
             }
         } catch (Exception e) {
-            LOGGER.error("Не удалось выполнить операцию");
+           LOGGER.error("Не удалось выполнить операцию", e);
             e.printStackTrace();
         }
         return null;
@@ -124,7 +124,7 @@ public class DbStore {
                 }
             }
         } catch (Exception e) {
-            LOGGER.error("Не удалось выполнить операцию");
+           LOGGER.error("Не удалось выполнить операцию", e);
             e.printStackTrace();
         }
         return -1;
@@ -142,7 +142,7 @@ public class DbStore {
                 }
             }
         } catch (Exception e) {
-            LOGGER.error("Не удалось выполнить операцию");
+           LOGGER.error("Не удалось выполнить операцию", e);
             throw new IllegalStateException(e);
         }
         return lst;
@@ -160,7 +160,7 @@ public class DbStore {
                 }
             }
         } catch (Exception e) {
-            LOGGER.error("Не удалось выполнить операцию");
+           LOGGER.error("Не удалось выполнить операцию", e);
             throw new IllegalStateException(e);
         }
         return false;

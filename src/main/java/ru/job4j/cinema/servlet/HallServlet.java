@@ -55,12 +55,16 @@ public class HallServlet extends HttpServlet {
                     + email + ", но с другим номером телефона.");
             req.getRequestDispatcher(urlPayment).forward(req, resp);
             return;
-        } else if (accountLeft == null && accountRight != null) {
+        } 
+        
+        if (accountLeft == null && accountRight != null) {
             req.setAttribute("error", "Уже есть зарегистрированный пользователь с phone: "
                     + phone + ", но с другой эл.почтой.");
             req.getRequestDispatcher(urlPayment).forward(req, resp);
             return;
-        } else if (accountLeft == null && accountRight == null) {
+        } 
+        
+        if (accountLeft == null && accountRight == null) {
             int accountId = db.regAccount(username, email, phone);
             if (accountId < 0) {
                 req.setAttribute("error", "Ошибка регистрации аккаунта.");
@@ -75,7 +79,9 @@ public class HallServlet extends HttpServlet {
             req.setAttribute("error", "К сожалению выбранный вами билет был продан.");
             req.getRequestDispatcher("index.jsp").forward(req, resp);
             return;
-        } else if (accountLeft != null && accountRight != null
+        } 
+        
+        if (accountLeft != null && accountRight != null
                 && !(accountLeft.getEmail().equals(accountRight.getEmail()))) {
             req.setAttribute("error", "Уже есть зарегистрированные пользователи с phone: "
                     + phone + ", но с другой эл.почтой. С email: " + email + ", но с другим номером телефона.");
