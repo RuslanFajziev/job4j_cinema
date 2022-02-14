@@ -25,15 +25,13 @@ public class DbStore {
                 DbStore.class.getClassLoader().getResourceAsStream(fileProperties)))) {
             cfg.load(io);
         } catch (Exception e) {
-           LOGGER.error("Не удалось выполнить операцию", e);
-            throw new IllegalStateException(e);
+            LOGGER.error("Не удалось выполнить операцию", e);
         }
 
         try {
             Class.forName(cfg.getProperty("jdbc.driver"));
         } catch (Exception e) {
-           LOGGER.error("Не удалось выполнить операцию", e);
-            throw new IllegalStateException(e);
+            LOGGER.error("Не удалось выполнить операцию", e);
         }
 
         pool.setDriverClassName(cfg.getProperty("jdbc.driver"));
@@ -53,24 +51,24 @@ public class DbStore {
         return Lazy.INST;
     }
 
-    public int regAccount(String username, String email, String phone) {
-            var req = "INSERT INTO account(username, email, phone) VALUES (?, ?, ?)";
-            try (Connection cn = pool.getConnection();
-                 PreparedStatement ps = cn.prepareStatement(req, PreparedStatement.RETURN_GENERATED_KEYS)) {
-                ps.setString(1, username);
-                ps.setString(2, email);
-                ps.setString(3, phone);
-                ps.execute();
-                try (ResultSet id = ps.getGeneratedKeys()) {
-                    if (id.next()) {
-                        return id.getInt(1);
-                    }
+    public Optional<Integer> regAccount(String username, String email, String phone) {
+        Optional<Integer> rsl = Optional.empty();
+        var req = "INSERT INTO account(username, email, phone) VALUES (?, ?, ?)";
+        try (Connection cn = pool.getConnection();
+             PreparedStatement ps = cn.prepareStatement(req, PreparedStatement.RETURN_GENERATED_KEYS)) {
+            ps.setString(1, username);
+            ps.setString(2, email);
+            ps.setString(3, phone);
+            ps.execute();
+            try (ResultSet id = ps.getGeneratedKeys()) {
+                if (id.next()) {
+                    return Optional.of(id.getInt(1));
                 }
-            } catch (Exception e) {
-               LOGGER.error("Не удалось выполнить операцию", e);
-                e.printStackTrace();
             }
-            return -1;
+        } catch (Exception e) {
+            LOGGER.error("Не удалось выполнить операцию", e);
+        }
+        return rsl;
     }
 
     public AccountCinema findAccountByEmail(String email) {
@@ -85,8 +83,7 @@ public class DbStore {
                 }
             }
         } catch (Exception e) {
-           LOGGER.error("Не удалось выполнить операцию", e);
-            e.printStackTrace();
+            LOGGER.error("Не удалось выполнить операцию", e);
         }
         return null;
     }
@@ -103,13 +100,13 @@ public class DbStore {
                 }
             }
         } catch (Exception e) {
-           LOGGER.error("Не удалось выполнить операцию", e);
-            e.printStackTrace();
+            LOGGER.error("Не удалось выполнить операцию", e);
         }
         return null;
     }
 
-    public int regTicket(int sessionId, int row, int cell, int accountId) {
+    public Optional<Integer> regTicket(int sessionId, int row, int cell, int accountId) {
+        Optional<Integer> rsl = Optional.empty();
         var req = "INSERT INTO ticket(session_id, row, cell, account_id) VALUES (?, ?, ?, ?)";
         try (Connection cn = pool.getConnection();
              PreparedStatement ps = cn.prepareStatement(req, PreparedStatement.RETURN_GENERATED_KEYS)) {
@@ -120,14 +117,13 @@ public class DbStore {
             ps.execute();
             try (ResultSet id = ps.getGeneratedKeys()) {
                 if (id.next()) {
-                    return id.getInt(1);
+                    return Optional.of(id.getInt(1));
                 }
             }
         } catch (Exception e) {
-           LOGGER.error("Не удалось выполнить операцию", e);
-            e.printStackTrace();
+            LOGGER.error("Не удалось выполнить операцию", e);
         }
-        return -1;
+        return rsl;
     }
 
     public List<TicketCinema> listTickets(int sessionId) {
@@ -142,8 +138,7 @@ public class DbStore {
                 }
             }
         } catch (Exception e) {
-           LOGGER.error("Не удалось выполнить операцию", e);
-            throw new IllegalStateException(e);
+            LOGGER.error("Не удалось выполнить операцию", e);
         }
         return lst;
     }
@@ -160,8 +155,7 @@ public class DbStore {
                 }
             }
         } catch (Exception e) {
-           LOGGER.error("Не удалось выполнить операцию", e);
-            throw new IllegalStateException(e);
+            LOGGER.error("Не удалось выполнить операцию", e);
         }
         return false;
     }

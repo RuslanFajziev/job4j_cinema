@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Optional;
 
 public class HallServlet extends HttpServlet {
     private static final Gson GSON = new GsonBuilder().create();
@@ -65,13 +66,13 @@ public class HallServlet extends HttpServlet {
         } 
         
         if (accountLeft == null && accountRight == null) {
-            int accountId = db.regAccount(username, email, phone);
-            if (accountId < 0) {
+            Optional<Integer> accountIdOpt = db.regAccount(username, email, phone);
+            if (accountIdOpt.isEmpty()) {
                 req.setAttribute("error", "Ошибка регистрации аккаунта.");
                 req.getRequestDispatcher(urlPayment).forward(req, resp);
                 return;
             }
-            var rsl = regTicket(db, sessionId, row, cell, accountId);
+            var rsl = regTicket(db, sessionId, row, cell, accountIdOpt.get());
             if (rsl) {
                 resp.sendRedirect(req.getContextPath() + urlEndpay);
                 return;
@@ -104,6 +105,8 @@ public class HallServlet extends HttpServlet {
         if (rsl) {
             return false;
         }
-        return db.regTicket(sessionId, row, cell, accountId) > -1;
+        Optional<Integer> id =  db.regTicket(sessionId, row, cell, accountId);
+
+        return id.isPresent();
     }
 }
